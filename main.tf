@@ -1,20 +1,20 @@
+provider "aws" {
+  region = var.region
+}
+
 data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
+# Optional: If the IAM policy doesn't exist please remove this block and permissions_boundary below
 data "aws_iam_policy" "demo_user_permissions_boundary" {
   name = "DemoUser"
-}
-
-provider "aws" {
-  region = var.region
 }
 
 resource "aws_iam_user" "hcp_user" {
   name = "demo-${var.user_email}-vault-monitoring"
 
-  # We need the DemoUser policy assigned to an IAM user, to comply with our AWS
-  # Service Control Policy (SCP)
+  # Optional: Configure permissions boundary based on the org policies
   permissions_boundary = data.aws_iam_policy.demo_user_permissions_boundary.arn
   force_destroy        = true
 
@@ -26,8 +26,6 @@ resource "aws_iam_user" "hcp_user" {
 
 # Policies for Audits
 # https://developer.hashicorp.com/vault/tutorials/cloud-monitoring/vault-audit-log-cloudwatch
-# (Metrics, not yet available in the Permissions Boundary)
-
 data "aws_iam_policy_document" "hcp_cloudwatch_logs" {
   statement {
     sid = "HCPLogStreaming"
