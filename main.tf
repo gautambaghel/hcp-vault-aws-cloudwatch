@@ -60,7 +60,7 @@ resource "aws_iam_policy_attachment" "audit" {
 }
 
 resource "aws_iam_access_key" "access_key" {
-  user    = aws_iam_user.hcp_user.name
+  user = aws_iam_user.hcp_user.name
 }
 
 output "id" {
@@ -68,6 +68,6 @@ output "id" {
 }
 
 output "secret" {
-  value = aws_iam_access_key.access_key.secret
+  value     = aws_iam_access_key.access_key.secret
   sensitive = true
 }
